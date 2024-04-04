@@ -6,7 +6,7 @@ Just a simple static binary visualizer.
 2. run `bv [path_to_file]`.
 
 ## Controls
-- Mouse Wheel (Scrolling).
+- Mouse Wheel, Up/Down Arrow Keys  (Scrolling).
 - R (Reset Scroll)
 
 ## Preview
