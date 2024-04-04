@@ -55,7 +55,8 @@ void destroy_binary_buffer(BinaryBuffer* bin) {
     free(bin->buffer);
 }
 
-void display_binary_buffer(BinaryBuffer* bin, int x, int y, const int row_width, const int box_size) {
+// Renders binary blob as zig-zag.
+void display_binary_buffer(BinaryBuffer* bin, int x, int y, const int row_width, const int box_size, Font font) {
     if (!bin) {
         return;
     }
@@ -84,9 +85,9 @@ void display_binary_buffer(BinaryBuffer* bin, int x, int y, const int row_width,
 
     char str[64];
 
-    DrawRectangle(0, WINDOW_HEIGHT - 30, WINDOW_WIDTH, 30, BLUE);
+    DrawRectangle(0, WINDOW_HEIGHT - 30, WINDOW_WIDTH, 30, DARKBLUE);
     sprintf(str, "addr: %04x -> %04x", scroll_offset * row_width, y_max * row_width);
-    DrawText(str, 2, WINDOW_HEIGHT - 30 + 4, 24, WHITE);
+    DrawTextEx(font, str, (Vector2){2, WINDOW_HEIGHT - 32}, 32, 0, LIGHTGRAY);
 }
 
 int main(int argc, char** argv) {
@@ -104,26 +105,21 @@ int main(int argc, char** argv) {
 
     int scroll_y = 0;
 
-    Camera2D camera;
-    camera.offset = (Vector2){
-        0, 0
-    };
-    camera.target = (Vector2){0, 0};
-    camera.rotation = 0.0;
-    camera.zoom = 1.0;
+    Font font = LoadFont("fonts/OpenSans-Regular.ttf");
+
+    const float SCROLL_SPEED = 50;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(MAGENTA);
-        
-        BeginMode2D(camera);
-        display_binary_buffer(&bin, 0, scroll_y, ROW_WIDTH, BOX_SIZE);
-        EndMode2D();
-
+        display_binary_buffer(&bin, 0, scroll_y, ROW_WIDTH, BOX_SIZE, font);
         EndDrawing();
 
-        float scroll_delta = GetMouseWheelMove() * 150;
+        float scroll_delta = GetMouseWheelMove() * SCROLL_SPEED;
         scroll_y += scroll_delta;
+        scroll_y -= IsKeyDown(KEY_DOWN) * SCROLL_SPEED;
+        scroll_y += IsKeyDown(KEY_UP) * SCROLL_SPEED;
+
         if (scroll_y > 0) scroll_y = 0;
 
         if (IsKeyPressed(KEY_R)) {

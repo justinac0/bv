@@ -1,5 +1,5 @@
 # bv (Binary Visualizer)
-Just a tool for visualizing binary data.
+Just a simple static binary visualizer.
 
 ## Build & Run
 1. build `make all`.
