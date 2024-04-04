@@ -8,3 +8,6 @@ Just a tool for visualizing binary data.
 ## Controls
 - Mouse Wheel (Scrolling).
 - R (Reset Scroll)
+
+## Preview
+![Binary Dump of Ubuntu ISO](preview/binary-view-01.png)

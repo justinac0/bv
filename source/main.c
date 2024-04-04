@@ -12,10 +12,14 @@
 typedef unsigned char byte;
 
 typedef struct BinaryBuffer {
-    size_t length;
+    int length;
     byte* buffer;
 } BinaryBuffer;
 
+// Currently a whole file is loaded into RAM,
+// it would be nice to progressively load larger
+// files. So that there is no size limit to what binarys
+// can be viewed.
 BinaryBuffer create_binary_buffer(char* filename) {
     BinaryBuffer bin;
     FILE* file = fopen(filename, "rb");
@@ -51,38 +55,6 @@ void destroy_binary_buffer(BinaryBuffer* bin) {
     free(bin->buffer);
 }
 
-bool is_ascii(byte c) {
-    return c >= 32 && c <= 127;
-}
-
-bool is_low(byte c) {
-    return c < 32;
-}
-
-bool is_high(byte c) {
-    return c > 127;
-}
-
-bool is_0xff(byte c) {
-    return c == 0xff;
-}
-
-bool is_0x00(byte c) {
-    return c == 0x00;
-}
-
-Color hex_to_color(byte c) {
-    if (is_ascii(c)) return BLUE;
-    
-    if (is_0xff(c)) return WHITE;
-    if (is_0x00(c)) return BLACK;
-
-    if (is_low(c)) return GREEN;
-    if (is_high(c)) return RED;
-
-    return MAGENTA;
-}
-
 void display_binary_buffer(BinaryBuffer* bin, int x, int y, const int row_width, const int box_size) {
     if (!bin) {
         return;
@@ -109,16 +81,12 @@ void display_binary_buffer(BinaryBuffer* bin, int x, int y, const int row_width,
             color
         );
     }
-}
 
-void display_hex_dump(BinaryBuffer* bin, char* fmt) {
-    if (!bin) {
-        return;
-    }
+    char str[64];
 
-    for (int i = 0; i < bin->length; i++) {
-        printf(fmt, bin->buffer[i]);
-    }
+    DrawRectangle(0, WINDOW_HEIGHT - 30, WINDOW_WIDTH, 30, BLUE);
+    sprintf(str, "addr: %04x -> %04x", scroll_offset * row_width, y_max * row_width);
+    DrawText(str, 2, WINDOW_HEIGHT - 30 + 4, 24, WHITE);
 }
 
 int main(int argc, char** argv) {
@@ -130,9 +98,9 @@ int main(int argc, char** argv) {
     }
 
     BinaryBuffer bin = create_binary_buffer(argv[1]);
-    display_hex_dump(&bin, "%02x ");
 
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
+    SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     int scroll_y = 0;
 
