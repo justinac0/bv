@@ -85,9 +85,9 @@ void display_binary_buffer(BinaryBuffer* bin, int x, int y, const int row_width,
 
     char str[64];
 
-    DrawRectangle(0, WINDOW_HEIGHT - 30, WINDOW_WIDTH, 30, DARKBLUE);
+    DrawRectangle(0, WINDOW_HEIGHT - 30, WINDOW_WIDTH, 30, BLUE);
     sprintf(str, "addr: %04x -> %04x", scroll_offset * row_width, y_max * row_width);
-    DrawTextEx(font, str, (Vector2){2, WINDOW_HEIGHT - 32}, 32, 0, LIGHTGRAY);
+    DrawTextEx(font, str, (Vector2){2, WINDOW_HEIGHT - 32}, 32, 0, WHITE);
 }
 
 int main(int argc, char** argv) {
@@ -101,7 +101,8 @@ int main(int argc, char** argv) {
     BinaryBuffer bin = create_binary_buffer(argv[1]);
 
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
-    SetWindowState(FLAG_WINDOW_RESIZABLE);
+    SetWindowMinSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    SetWindowMaxSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     int scroll_y = 0;
 

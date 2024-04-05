@@ -10,4 +10,4 @@ Just a simple static binary visualizer.
 - R (Reset Scroll)
 
 ## Preview
-![Binary Dump of Ubuntu ISO](preview/binary-view-01.png)
+![elf](preview/binary-view-01.png)
